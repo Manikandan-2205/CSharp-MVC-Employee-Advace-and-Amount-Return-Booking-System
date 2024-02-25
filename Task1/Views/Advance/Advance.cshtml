@@ -1,0 +1,151 @@
+﻿
+@{
+    ViewBag.Title = "Advance";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Advance</h2>
+
+    <div class="container">
+        <h2>BioID Form</h2>
+        <div class="form-group">
+            <label for="BioId">BioID Selection:</label>
+            <div id="bioId">
+                <select class="form-control" id="BioId" name="BioId">
+                    <option>Select Bio ID</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="Name">Name:</label>
+            <input type="text" class="form-control" id="Name" name="Name" placeholder="Enter name" readonly>
+        </div>
+        <div class="form-group">
+            <label for="Balance">Balance:</label>
+            <input type="text" class="form-control" id="Balance" name="Balance" placeholder="Enter balance" readonly>
+        </div>
+        <div class="form-group">
+            <label for="Entry_Type">Entry Type:</label>
+            <select class="form-control" id="Entry_Type" name="Entry_Type">
+                <option value="Advance">Advance</option>
+                <option value="Return">Return</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="Need_Amount">Amount:</label>
+            <input type="number" step="0.01" class="form-control" id="Need_Amount" name="Need_Amount" placeholder="Enter amount">
+        </div>
+        <div class="form-group">
+            <label for="Reason">Reason:</label>
+            <textarea class="form-control" id="Reason" name="Reason" placeholder="Enter reason"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="Date">Date:</label>
+            <input type="datetime-local" class="form-control" id="Date" name="Date">
+        </div>
+        <button type="submit" id="Save" name="Save" class="btn btn-primary">Submit</button>
+    </div>
+@section scripts
+{
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.validate.js"></script>
+    <script>
+        $(document).ready(function () {
+            getCar();
+
+
+            function getCar() {
+                $.ajax({
+                    type: 'GET',
+                    url: '/Advance/GetBioId',
+                    dataType: 'JSON',
+                    success: function (data) {
+                        console.log(data);
+                        // Populate the CarNo select element with data received from the server
+                        for (var i = 0; i < data.length; i++) {
+                            $("#BioId").append($("<option/>", {
+                                value: data[i].BioId,
+                                text: data[i].BioId
+                            }));
+                        }
+                    },
+                    error: function (error) {
+                        console.error("Error fetching car data: ", error);
+                    }
+                });
+            }
+
+            $("#BioId").change(function () {
+                var selectedBioId = $(this).val();
+                $.ajax({
+                    type: 'POST',
+                    url: '/Advance/GetEmpName',
+                    dataType: 'JSON',
+                    data: { BioId: selectedBioId },
+                    success: function (data) {
+                        console.log(data);
+                        $("#Name").val(data);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error occurred while fetching employee name:", error);
+                    }
+                });
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/Advance/GetBalance',
+                    dataType: 'JSON',
+                    data: { BioId: selectedBioId },
+                    success: function (data) {
+                        console.log(data);
+                        $("#Balance").val(data);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error occurred while fetching balance:", error);
+                    }
+                });
+            });
+
+
+            // Handle Save button click
+            $("#Save").click(function () {
+                saveRental();
+            });
+
+            function saveRental() {
+                var formData = {
+                    BioId: $("#BioId").val(),
+                    Name: $("#Name").val(),
+                    Balance: $("#Balance").val(),
+                    Entry_Type: $("#Entry_Type").val(),
+                    Need_Amount: $("#Need_Amount").val(),
+                    Reason: $("#Reason").val(),
+                    Date: $("#Date").val()
+                };
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/Advance/Save',
+                    data: formData,
+                    success: function (result) {
+                        if (result.success) {
+                            console.log("Data saved successfully");
+                            alert("Data saved successfully!");
+                            location.reload();
+                        } else {
+                            // Display validation errors to the user
+                            var errorMessage = "Validation errors:\n" + result.errors.join("\n");
+                            alert(errorMessage);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error saving data: " + error);
+                    }
+                });
+            }
+        });
+    </script>
+}
+
+

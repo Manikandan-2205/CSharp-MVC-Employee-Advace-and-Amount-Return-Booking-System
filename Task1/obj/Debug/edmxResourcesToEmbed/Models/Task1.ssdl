@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="Task2Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Masters">
+    <Key>
+      <PropertyRef Name="BioId" />
+    </Key>
+    <Property Name="BioId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="varchar" MaxLength="25" Nullable="false" />
+    <Property Name="Balance" Type="decimal" Precision="10" Scale="2" />
+  </EntityType>
+  <EntityType Name="RoleDetails">
+    <Key>
+      <PropertyRef Name="RoleId" />
+    </Key>
+    <Property Name="RoleId" Type="int" Nullable="false" />
+    <Property Name="RoleName" Type="nvarchar" MaxLength="50" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Transactions">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="BioId" Type="int" />
+    <Property Name="Name" Type="varchar" MaxLength="25" Nullable="false" />
+    <Property Name="Balance" Type="decimal" Precision="10" Scale="2" />
+    <Property Name="Entry_Type" Type="varchar" MaxLength="25" />
+    <Property Name="Need_Amount" Type="decimal" Precision="10" Scale="2" />
+    <Property Name="Reason" Type="varchar" MaxLength="255" />
+    <Property Name="Date" Type="datetime" />
+  </EntityType>
+  <EntityType Name="UserDetails">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Email" Type="nvarchar" MaxLength="50" />
+    <Property Name="PhoneNo" Type="nvarchar" MaxLength="10" />
+    <Property Name="Username" Type="nvarchar" MaxLength="50" />
+    <Property Name="Password" Type="nvarchar" MaxLength="10" Nullable="false" />
+    <Property Name="ConfirmPassword" Type="nvarchar" MaxLength="10" Nullable="false" />
+    <Property Name="RoleId" Type="int" Nullable="false" />
+  </EntityType>
+  <Association Name="FK__Transacti__BioId__2A4B4B5E">
+    <End Role="Masters" Type="Self.Masters" Multiplicity="0..1" />
+    <End Role="Transactions" Type="Self.Transactions" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Masters">
+        <PropertyRef Name="BioId" />
+      </Principal>
+      <Dependent Role="Transactions">
+        <PropertyRef Name="BioId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_UserDetails_RoleDetails">
+    <End Role="RoleDetails" Type="Self.RoleDetails" Multiplicity="1" />
+    <End Role="UserDetails" Type="Self.UserDetails" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="RoleDetails">
+        <PropertyRef Name="RoleId" />
+      </Principal>
+      <Dependent Role="UserDetails">
+        <PropertyRef Name="RoleId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="Task2ModelStoreContainer">
+    <EntitySet Name="Masters" EntityType="Self.Masters" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="RoleDetails" EntityType="Self.RoleDetails" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Transactions" EntityType="Self.Transactions" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="UserDetails" EntityType="Self.UserDetails" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK__Transacti__BioId__2A4B4B5E" Association="Self.FK__Transacti__BioId__2A4B4B5E">
+      <End Role="Masters" EntitySet="Masters" />
+      <End Role="Transactions" EntitySet="Transactions" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UserDetails_RoleDetails" Association="Self.FK_UserDetails_RoleDetails">
+      <End Role="RoleDetails" EntitySet="RoleDetails" />
+      <End Role="UserDetails" EntitySet="UserDetails" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
