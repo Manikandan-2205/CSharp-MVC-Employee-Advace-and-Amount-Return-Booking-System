@@ -13,7 +13,7 @@ This project is a web application built using C# 4.6.1, MVC 5 framework, MSSQL S
 ## Installation and Setup 🛠️
 1. **Clone the repository:**
    ```bash
-   git clone <repository-url>
+   git clone <https://github.com/Manikandan-2205/CSharp-MVC-Employee-Advace-and-Amount-Return-Booking-System.git>
 
 ## Technologies Used 💻
 - **C# 4.6.1**
